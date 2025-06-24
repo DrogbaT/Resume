@@ -1,0 +1,128 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Артем Таран</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Артем Таран</h1>
+            <p>Системний адміністратор | Київська обл., Україна</p>
+        </header>
+
+        <div class="section">
+            <h2>Про мене</h2>
+            <p>Молодий та організований спеціаліст з досвідом у системному адмініструванні та знаннями в кібербезпеці. Володію базовими навичками налаштування мереж, адміністрування серверів.</p>
+        </div>
+
+        <div class="section">
+            <h2>Досвід роботи</h2>
+            <div class="experience-item">
+                <h3>Провідний системний адміністратор</h3>
+                <p>ТОВ "Роза вітрів", Київ | 05.2024 - 07.2024</p>
+                <ul>
+                    <li>Керування мережевою інфраструктурою компанії</li>
+                    <li>Підтримка працездотності техніки</li>
+                    <li>Діагностика та вирішення системних збоїв</li>
+                    <li>Усунення технічних проблем</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3>Молодший системний адміністратор (неофіційно)</h3>
+                <p>IT-компанія, Київ | 08.2023 - 04.2024</p>
+                <ul>
+                    <li>Підтримка серверів на платформах Windows та Ubuntu</li>
+                    <li>Конфігурація мережевого обладнання Cisco</li>
+                    <li>Виявлення та усунення мережевих проблем</li>
+                    <li>Діагностика та вирішення системних збоїв</li>
+                    <li>Усунення технічних проблем</li>
+                    <li>Налаштування телефонних систем</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Освіта</h2>
+            <div class="experience-item">
+                <h3>Незакінчена вища, Кібербезпека</h3>
+                <p>Державний торговельно-економічний університет, Київ | 2023 - 2025</p>
+            </div>
+            <div class="experience-item">
+                <h3>Середня спеціальна, Комп'ютерна інженерія</h3>
+                <p>Київський державний коледж туризму та готельного господарства, Київ | 2019 - 2023</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Навички</h2>
+            <div class="skills-list">
+                <span class="skill">VLAN</span>
+                <span class="skill">DHCP</span>
+                <span class="skill">Cisco Packet Tracer</span>
+                <span class="skill">Налаштування VPN</span>
+                <span class="skill">Windows Server</span>
+                <span class="skill">Ubuntu</span>
+                <span class="skill">IP-протоколи</span>
+                <span class="skill">HTML</span>
+                <span class="skill">CSS</span>
+                <span class="skill">Організованість</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Сертифікати</h2>
+            <div class="experience-item">
+                <h3>Сертифікат Cisco</h3>
+                <p>Отримано: 2023</p>
+            </div>
+        </div>
+
+        <div class="section link">
+            <a href="secondary.html">Переглянути додаткову інформацію</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
